@@ -32,7 +32,6 @@ const postSession = async (req, res) => {
     const schemaValidation = {
       device_id: { type: "string", Optional: false },
       title: { type: "string", Optional: false },
-      status: { type: "string", Optional: false },
     };
 
     const validator = new Validator();
@@ -51,7 +50,6 @@ const postSession = async (req, res) => {
       user_id: userId.toString(),
       device_id: data.device_id.toString(),
       title: data.title,
-      status: data.status.toString(),
       created_at: new Date(),
     });
 
@@ -61,7 +59,6 @@ const postSession = async (req, res) => {
         user_id: userId,
         device_id: data.device_id,
         title: data.title,
-        status: data.status,
         created_at: new Date(),
       },
     });
@@ -98,14 +95,11 @@ const getLastSession = async (req, res) => {
   }
 };
 
-const save = async (req, res) => {
+const sessionEnd = async (req, res) => {
   try {
     const data = req.body;
     const schemaValidation = {
-      start_time: { type: "string", Optional: false },
-      end_time: { type: "string", Optional: false },
-      title: { type: "string", Optional: false },
-      device_id: { type: "string", Optional: false },
+      record_session_id: { type: "string", Optional: false }
     };
 
     const validator = new Validator();
@@ -118,14 +112,25 @@ const save = async (req, res) => {
     }
 
     const userId = helpers.getUserId(req);
+    const recordSession = await DB('record_session').where({id: data.record_session_id}).first();
+    const deleteSession = await DB('record_session').where({id: data.record_session_id}).delete();
+
+    if (!deleteSession){
+        return res.status(400).json({
+            message: "Error",
+            data: "Record session not found"
+        });
+    }
+    
+    console.log(deleteSession);
 
     await DB('records').insert({
         id: uuid.v4(),
         user_id: userId.toString(),
-        device_id: data.device_id,
-        title: data.title,
-        start_time: data.start_time,
-        end_time: data.end_time,
+        device_id: recordSession.device_id,
+        title: recordSession.title,
+        start_time: recordSession.created_at,
+        end_time: new Date(),
         created_at: new Date(),
         updated_at: new Date()
     });
@@ -134,10 +139,10 @@ const save = async (req, res) => {
         message: "Success",
         data: {
             user_id: userId.toString(),
-            device_id: data.device_id,
-            title: data.title,
-            start_time: data.start_time,
-            end_time: data.end_time,
+            device_id: recordSession.device_id,
+            title: recordSession.title,
+            start_time: recordSession.created_at,
+            end_time: new Date(),
             created_at: new Date(),
             updated_at: new Date()
         },
@@ -157,5 +162,5 @@ module.exports = {
   getAll,
   postSession,
   getLastSession,
-  save,
+  sessionEnd,
 };

@@ -7,7 +7,7 @@ const recordController = require('../../controllers/record.controller');
 router.get('/get', middleware.auth, recordController.getAll);
 router.post('/session', middleware.auth, recordController.postSession);
 router.get('/session/:device_id', middleware.auth, recordController.getLastSession);
-router.post('/save', middleware.auth, recordController.save);
+router.post('/session/end', middleware.auth, recordController.sessionEnd);
 
 
 module.exports = router;

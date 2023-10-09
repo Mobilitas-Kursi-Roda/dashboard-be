@@ -25,6 +25,11 @@ app.use(cors());
 app.get('/', (req, res) => {
     res.send('<center style="font-size:40px;margin-top:23%">Kutoko Service 👋</center>');
 })
+app.post('/test', (req, res)=>{
+    return res.json({
+        data: 'ehe'
+    });
+});
 app.use("/v1", routesV1);
 
 app.listen(PORT, () => {
@@ -41,7 +46,7 @@ setInterval(() => {
         client.send(JSON.stringify(
             [
                 {
-                    "id": "0be245a6-d24c-4e0a-8d73-ea687197078f",
+                    "id": "c4640a57-0cad-46dd-9d70-01343a79516e",
                     "name": "Mokura 1",
                     "speed": Math.floor(Math.random() * 45),
                     "throtle": Math.floor(Math.random() * 100),
@@ -50,7 +55,7 @@ setInterval(() => {
                     "long": 106.816666+(i/100000)
                 },
                 {
-                    "id": "a0651f97-c228-4448-b078-fffc40c0e7ec",
+                    "id": "05598a91-f323-45e5-a295-19aa26249c5a",
                     "name": "Mokura 2",
                     "speed": Math.floor(Math.random() * 45),
                     "throtle": Math.floor(Math.random() * 100),
